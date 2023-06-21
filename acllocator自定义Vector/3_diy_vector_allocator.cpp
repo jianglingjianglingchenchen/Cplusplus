@@ -9,14 +9,14 @@ class Vector
 {
 public:
     using iiterator = T*;
-    iiterator begin();
-    iiterator end();
+    iiterator begin() const;
+    iiterator end() const;
     Vector();
     ~Vector();
     void push_back(const T &);
     void pop_back();
-    int size();
-    int capacity();
+    int size() const;
+    int capacity() const;
 private:
     void reallocate();//重新分配内存,动态扩容要用的
 private:
@@ -34,17 +34,17 @@ void Vector<T>::pop_back(){
 }
 
 template <class T>
-T* Vector<T>::begin(){
+T* Vector<T>::begin() const{
     return _start;
 }
 
 template <class T>
-T* Vector<T>::end(){
+T* Vector<T>::end() const{//要优先提供const版本，否则如果容器被const修饰，就无法使用迭代器就行遍历
     return _finish;
 }
 
 template <class T>
-int Vector<T>::capacity(){
+int Vector<T>::capacity() const{
     return (int)(_end_of_storage - _start);
 }
 
@@ -60,7 +60,7 @@ Vector<T>::~Vector(){
 }
 
 template <class T>
-int Vector<T>::size(){
+int Vector<T>::size() const{
     return (int)(_finish - _start);
 }
 
@@ -102,9 +102,6 @@ void Vector<T>::push_back(const T& val){
     //如果是放入第一个元素，则只申请一个元素大小的空间
     //如果是满了需要扩容，则直接申请现在元素个数的两倍的空间
     if(size() == capacity()){
-        cout << "kuorongzhiqian:" << "\n"
-            << "size:" << size() <<"\n"
-            << "capacity:" << capacity() << endl;
         reallocate();//只是进行了扩容，没有进行对象的压栈
     }
     if(size() < capacity()){//扩容成功才进行压栈
@@ -112,33 +109,51 @@ void Vector<T>::push_back(const T& val){
     }
 }
 
+class Point{
+public:
+    Point(const int& x,const int& y):_x(x),_y(y){}
+    friend ostream& operator<<(ostream& os,const Point& rhs);
+private:
+    int _x,_y;
+};
+
+ostream& operator<<(ostream& os,const Point& rhs){
+    os << rhs._x << "," << rhs._y;
+    return os;
+}
+
+template <class Container>
+void printCon(const Container& con){//这里加上const会报错
+    for(auto& x : con)
+        cout << x << " ";
+    cout << endl;
+}
+
+template <class Container>
+void printCapacity(const Container& con){
+    cout << "con.size:" << con.size() << endl;
+    cout << "con.capacity:" << con.capacity() << endl;
+}
+
 int main(void)
 {
-    Vector<int> t;
-    t.push_back(11);
-    cout << "size:" << t.size() << endl;
-    cout << "capacity:" << t.capacity() << endl;
-    t.push_back(23);
-    cout << "size:" << t.size() << endl;
-    cout << "capacity:" << t.capacity() << endl;
-    t.push_back(23);
-    cout << "size:" << t.size() << endl;
-    cout << "capacity:" << t.capacity() << endl;
-    t.push_back(23);
-    cout << "size:" << t.size() << endl;
-    cout << "capacity:" << t.capacity() << endl;
-    t.push_back(23);
-    cout << "size:" << t.size() << endl;
-    cout << "capacity:" << t.capacity() << endl;
-
-    for(auto& x : t)
-        cout << x << " ";
-    cout << endl;
-    t.pop_back();
-    for(auto& x : t)
-        cout << x << " ";
-    cout << endl;
-
+    Vector<Point> vec;
+    vec.push_back({1,2});
+    printCapacity(vec);
+    vec.push_back({1,7});
+    printCapacity(vec);
+    vec.push_back({1,90});
+    printCapacity(vec);
+    vec.push_back({23,2});
+    printCapacity(vec);
+    vec.push_back({1,77});
+    printCapacity(vec);
+    vec.push_back({1,2});
+    printCapacity(vec);
+    vec.push_back({100,2});
+    printCapacity(vec);
+    
+    printCon(vec);
     return 0;
 }
 
