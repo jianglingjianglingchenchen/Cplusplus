@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.0)
+project(OOPC)
+include_directories(${CMAKE_SOURCE_DIR}/include)
+file(GLOB SRC ${CMAKE_SOURCE_DIR}/src/*.cpp)
+list(LENGTH SRC SRC_LENGTH)
+message("Number of files in SRC: ${SRC_LENGTH}")
+add_executable(a.out ${SRC})
+target_link_libraries(a.out pthread)
