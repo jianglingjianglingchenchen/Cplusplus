@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.0)
+project(REACTOR)
+include_directories(${CMAKE_SOURCE_DIR})
+file(GLOB SRC ${PROJECT_SOURCE_DIR}/*.cc)
+add_executable(a.out ${SRC})
+target_link_libraries(a.out pthread)
